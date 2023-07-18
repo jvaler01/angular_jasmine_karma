@@ -1,29 +1,69 @@
-import { TestBed } from '@angular/core/testing';
-import { RouterTestingModule } from '@angular/router/testing';
+import {ComponentFixture, TestBed, waitForAsync} from '@angular/core/testing';
 import { AppComponent } from './app.component';
 
 describe('AppComponent', () => {
-  beforeEach(() => TestBed.configureTestingModule({
-    imports: [RouterTestingModule],
-    declarations: [AppComponent]
+  let component: AppComponent;
+  let fixture: ComponentFixture<AppComponent>;
+  beforeEach(waitForAsync(()=>{
+    TestBed.configureTestingModule({
+      declarations: [
+        AppComponent
+      ],
+      providers: []
+    }).compileComponents();
+
+    TestBed.configureTestingModule({
+      declarations: [
+        AppComponent
+      ]
+    }).createComponent(AppComponent);
   }));
 
-  it('should create the app', () => {
-    const fixture = TestBed.createComponent(AppComponent);
-    const app = fixture.componentInstance;
-    expect(app).toBeTruthy();
-  });
-
-  it(`should have as title 'angular_jasmine_karma'`, () => {
-    const fixture = TestBed.createComponent(AppComponent);
-    const app = fixture.componentInstance;
-    expect(app.title).toEqual('angular_jasmine_karma');
-  });
-
-  it('should render title', () => {
-    const fixture = TestBed.createComponent(AppComponent);
+  beforeEach(() => {
+    fixture = TestBed.createComponent(AppComponent);
+    component = fixture.componentInstance;
     fixture.detectChanges();
-    const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('.content span')?.textContent).toContain('angular_jasmine_karma app is running!');
+  });
+
+  it('should create the component', () => {
+    expect(component).toBeTruthy();
+  });
+
+  it('should add two numbers correctly', () => {
+    // Arrange
+    const num1InputElement: HTMLInputElement = fixture.nativeElement.querySelector('#num1');
+    const num2InputElement: HTMLInputElement = fixture.nativeElement.querySelector('#num2');
+    const calcButton: HTMLButtonElement = fixture.nativeElement.querySelector('#calc');
+    const resultInputElement: HTMLInputElement = fixture.nativeElement.querySelector('#result');
+
+    // Act
+    num1InputElement.value = '2';
+    num2InputElement.value = '3';
+    num1InputElement.dispatchEvent(new Event('input'));
+    num2InputElement.dispatchEvent(new Event('input'));
+    calcButton.click();
+    fixture.detectChanges();
+
+    // Assert
+    expect(parseFloat(resultInputElement.value)).toEqual(5);
+  });
+
+  it('should handle invalid inputs', () => {
+    // Arrange
+    const num1InputElement: HTMLInputElement = fixture.nativeElement.querySelector('#num1');
+    const num2InputElement: HTMLInputElement = fixture.nativeElement.querySelector('#num2');
+    const calcButton: HTMLButtonElement = fixture.nativeElement.querySelector('#calc');
+    const resultInputElement: HTMLInputElement = fixture.nativeElement.querySelector('#result');
+
+    // Act
+    num1InputElement.value = '2';
+    num2InputElement.value = 'abc'; // Invalid input
+    num1InputElement.dispatchEvent(new Event('input'));
+    num2InputElement.dispatchEvent(new Event('input'));
+    calcButton.click();
+    fixture.detectChanges();
+
+    // Assert
+    expect(resultInputElement.value).toBe('NaN');
   });
 });
